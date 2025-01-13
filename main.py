@@ -1,212 +1,77 @@
-
 # Check if matrix is valid
-def matrix_check():
+def matrix_check(matrix_data):
     try:
-        if len(matrix) == 9:
-            for i in range(9):
-                if len(matrix[i]) != 9:
+        if len(matrix_data) == 9:
+            for row in matrix_data:
+                if len(row) != 9:
                     return False
-                for j in range(9):
-                    if matrix[i][j] not in range(1,10):
+                for cell in row:
+                    if cell not in range(1, 10):
                         return False
-
         else:
             return False
         return True
-    except Exception as e:
-        print(e)
+    except ValueError as value_error:  # Renamed exception to 'value_error' to avoid shadowing
+        print(f"ValueError: {value_error}")
+        return False
 
-#Check if row valid
-def row_check():
-
-    for i in range(9):
-        dict = {}
-        for ele in matrix[i]:
-            try:
-                dict[ele] += 1
-            except:
-                dict[ele] = 1
-
-        for item in dict:
-
-            # if frequency is more than 1
-            if (dict[item] > 1):
+# Check if row is valid
+def row_check(matrix_data):
+    for row in matrix_data:
+        count = {}
+        for ele in row:
+            count[ele] = count.get(ele, 0) + 1
+            if count[ele] > 1:
                 return False
     return True
 
-#Check if column valid
-def column_check():
-    for i in range(9):
-        dict = {}
-        for j in range(9):
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
+# Check if column is valid
+def column_check(matrix_data):
+    for col_idx in range(9):
+        count = {}
+        for row in matrix_data:
+            ele = row[col_idx]
+            count[ele] = count.get(ele, 0) + 1
+            if count[ele] > 1:
                 return False
     return True
 
-#Check if square valid
-def square_check():
-    temp = []
-    dict = {}
-    # Top left square
-    for i in range(3):
-        for j in range(3):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-    temp = []
-    dict = {}
-    # Top middle square
-    for i in range(3):
-        for j in range(3, 6):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-
-    temp = []
-    dict = {}
-    # Top right square
-    for i in range(3):
-        for j in range(6, 9):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-
-    temp = []
-    dict = {}
-    # Middle left square
-    for i in range(3, 6):
-        for j in range(3):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-
-    temp = []
-    dict = {}
-    # Middle middle square
-    for i in range(3, 6):
-        for j in range(3, 6):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-
-    temp = []
-    dict = {}
-    # Middle right square
-    for i in range(3, 6):
-        for j in range(6, 9):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-    temp = []
-    dict = {}
-    # Bottle left square
-    for i in range(6, 9):
-        for j in range(3):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-    temp = []
-    dict = {}
-    # Bottle middle square
-    for i in range(6, 9):
-        for j in range(3, 6):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
-    temp = []
-    dict = {}
-    # Bottle right square
-    for i in range(6, 9):
-        for j in range(6, 9):
-            temp.append(matrix[i][j])
-            try:
-                dict[matrix[j][i]] += 1
-            except:
-                dict[matrix[j][i]] = 1
-        for item in dict:
-            if (dict[item] > 1):
-                return False
+# Check if 3x3 square is valid
+def square_check(matrix_data):
+    for row_start in range(0, 9, 3):
+        for col_start in range(0, 9, 3):
+            count = {}
+            for i in range(3):  # Renamed to avoid shadowing outer variable 'i'
+                for j in range(3):
+                    ele = matrix_data[row_start + i][col_start + j]
+                    count[ele] = count.get(ele, 0) + 1
+                    if count[ele] > 1:
+                        return False
     return True
 
-#print matrix
-def print_matrix():
-    for i in matrix:
-        for j in i:
-            print(j, end =" ")
-        print()
-
-
+# Print matrix
+def print_matrix(matrix_data):
+    for row in matrix_data:
+        print(" ".join(map(str, row)))
 
 if __name__ == '__main__':
 
     # Take input put into an array
-    matrix = []
+    sudoku_matrix = []
     try:
-        for i in range(9):
-            matrix.append(list(map(int, input("Sudoku row {} : ".format(i+1)).strip().split())))
+        for row_idx in range(9):  # Renamed to avoid shadowing outer variable 'i'
+            sudoku_matrix.append(list(map(int, input(f"Sudoku row {row_idx + 1}: ").strip().split())))
         print()
-    except Exception as e:
-        print(e)
+    except ValueError as input_error:  # Renamed to 'input_error' to avoid shadowing
+        print(f"ValueError: {input_error}")
 
-    #Check if user input is valid
-    valid = matrix_check()
-    if valid == True:
-        if row_check() and column_check() and square_check() == True:
+    # Check if user input is valid
+    if matrix_check(sudoku_matrix):
+        if row_check(sudoku_matrix) and column_check(sudoku_matrix) and square_check(sudoku_matrix):
             print('Solution Valid')
-            print_matrix()
+            print_matrix(sudoku_matrix)
         else:
             print('Solution not Valid')
-            print_matrix()
+            print_matrix(sudoku_matrix)
     else:
         print('User input is not valid')
-
-
-
-
-
-
